@@ -206,7 +206,7 @@ class memmap(ndarray):
     __array_priority__ = -100.0
 
     def __new__(subtype, filename, dtype=uint8, mode='r+', offset=0,
-                shape=None, order='C'):
+                shape=None, order='C', pad=0):
         # Import here to minimize 'import numpy' overhead
         import mmap
         import os.path
@@ -264,7 +264,7 @@ class memmap(ndarray):
             start = offset - offset % mmap.ALLOCATIONGRANULARITY
             bytes -= start
             array_offset = offset - start
-            mm = mmap.mmap(fid.fileno(), bytes, access=acc, offset=start)
+            mm = mmap.mmap(fid.fileno(), bytes + pad, access=acc, offset=start)
 
             self = ndarray.__new__(subtype, shape, dtype=descr, buffer=mm,
                                    offset=array_offset, order=order)
